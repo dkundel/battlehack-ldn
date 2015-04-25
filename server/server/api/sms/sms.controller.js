@@ -8,6 +8,7 @@ var _ = require('lodash');
 var Query = require('../query/query.model');
 var User = require('../user/user.model');
 var PhantomParser = require('./phantom.parser');
+var twilio = require('twilio');
 
 // Get list of things
 exports.handle = function(req, res, next) {
@@ -45,8 +46,22 @@ function _parse(text, user) {
   });
 }
 
-function _reply(text, User) {
-  // sends the 'text' to the respective user using twilio
+function _reply(text, user) {
+  var client = new twilio.RestClient('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN');
+  client.sendSms({
+      to: user.number,
+      from:'TWILIO_NUMBER',
+      body: text
+  }, function(error, message) {
+      if (!error) {
+          console.log('Success! The SID for this SMS message is:');
+          console.log(message.sid);   
+          console.log('Message sent on:');
+          console.log(message.dateCreated);
+      } else {
+          console.log('Oops! There was an error.');
+      }
+  });
 }
 
 
