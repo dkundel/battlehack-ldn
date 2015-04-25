@@ -9,7 +9,7 @@ var Query = require('../query/query.model');
 var User = require('../user/user.model');
 var PhantomParser = require('./phantom.parser');
 var twilio = require('twilio');
-var slugify = require('underscore.string/slugify');
+var slugify = require('underscore.string/escapeHTML');
 var levenshtein = require('underscore.string/levenshtein');
 
 // Get list of things
@@ -22,11 +22,11 @@ exports.handle = function(req, res, next) {
     number: fromNumber
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
-    // if (!user) {
+    if (!user) {
       var user = {number: fromNumber};
-      // _reply('Please sign up to use our awesome service!', user);
-      // return res.json(200);
-    // }
+      _reply('Please sign up to use our awesome service!', user);
+      return res.json(200);
+    }
 
     _parse(textBody, user, _reply);
 
@@ -39,14 +39,15 @@ function _parse(text, user, callback) {
   // and call below text
   var i = text.indexOf(':');
   if (i === -1) {
-    callback('Try a proper query :)', user);
+    callback('Unfortunatley your query is invalid. Try a query in the format queryType : queryString.', user);
     return;
   }
   var queryType = text.slice(0,i);
   var queryString = text.slice(i+1);
   queryType = queryType.replace(/\s+/g, '');
+  queryType = escapeHTML(queryType);
+  queryType = queryType.toLowerCase();
   queryString = queryString.trim();
-  queryString = slugify(queryString);
 
   Query.findOne({
     query : queryType
@@ -81,7 +82,7 @@ function _parse(text, user, callback) {
             minDistanceQueryTypeStr = result[i].query;
           }
         };
-        callback("Could not find query type. Did you maybe mean to write:%0a%0a" + minDistanceQueryTypeStr + " : " + queryString, user);
+        callback("Could not find query type. Did you maybe mean to write: " + minDistanceQueryTypeStr + " : " + queryString, user);
         return;
       });
     } else {
