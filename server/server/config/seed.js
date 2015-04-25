@@ -57,19 +57,25 @@ Query.find({}).remove(function () {
     url: 'http://en.wikipedia.org/w/index.php?search=%q',
     selector: '#mw-content-text p:nth-of-type(1)',
     alternativeSelector: '.mw-search-result-heading>a', // selects href.
+    spaceCharacter: '_',
     user: 'default'
   }, {
     query: 'y',
     url: 'http://www.yelp.com/search?find_desc=%q',
     selector: '.search-results-content li:nth-of-type(1)',
+    spaceCharacter: '_',
     user: 'default'
-  // }, {
-  //   query: 'a',
-  //   url: 'http://www.amazon.co.uk/s/?field-keywords=%q',
-  //   selector: '.search-results-content li:nth-of-type(1)',
-  //   user: ''
-  // }
   }, {
-    
-  );
+    query: 'a',
+    url: 'http://www.amazon.co.uk/s/?field-keywords=%q',
+    selector: '.search-results-content li:nth-of-type(1)',
+    spaceCharacter: '_',
+    user: ''
+  }, {
+    query: 'd',
+    url: 'http://www.oxforddictionaries.com/definition/english/%q',
+    selector: 'section.se1.senseGroup',
+    spaceCharacter: '-',
+    user: ''
+  });
 })

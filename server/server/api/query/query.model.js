@@ -7,6 +7,7 @@ var QuerySchema = new Schema({
   query: String,
   url: String,
   selector: String,
+  spaceCharacter: String,
   alternativeSelector: String,
   user: String
 });

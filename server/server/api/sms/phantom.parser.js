@@ -25,7 +25,7 @@ var phantom = require('phantom');
 
 // Get list of things
 exports.parse = function(text, query, callback) {
-    query.full_url = query.url.replace('%q', text.replace(" ", "_"));
+    query.full_url = query.url.replace('%q', text.replace(" ", query.spaceCharacter));
     console.log("QUERY: " + JSON.stringify(query));
     console.log("FULL URL: " + query.full_url);
     phantom.create(function(ph) {
