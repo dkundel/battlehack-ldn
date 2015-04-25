@@ -9,7 +9,7 @@ var Query = require('../query/query.model');
 var User = require('../user/user.model');
 var PhantomParser = require('./phantom.parser');
 var twilio = require('twilio');
-var slugify = require('underscore.string/slugify');
+var slugify = require('underscore.string/escapeHTML');
 var levenshtein = require('underscore.string/levenshtein');
 
 // Get list of things
@@ -39,14 +39,15 @@ function _parse(text, user) {
   // and call below text
   var i = text.indexOf(':');
   if (i === -1) {
-    _reply('Try a proper query :)', user);
+    _reply('Unfortunatley your query is invalid. Try a query in the format queryType : queryString.', user);
     return;
   }
   var queryType = text.slice(0,i);
   var queryString = text.slice(i+1);
   queryType = queryType.replace(/\s+/g, '');
+  queryType = escapeHTML(queryType);
+  queryType = queryType.toLowerCase();
   queryString = queryString.trim();
-  queryString = slugify(queryString);
 
   Query.findOne({
     query : queryType
@@ -81,7 +82,7 @@ function _parse(text, user) {
             minDistanceQueryTypeStr = result[i].query;
           }
         };
-        _reply("Could not find query type. Did you maybe mean to write:%0a%0a" + minDistanceQueryTypeStr + " : " + queryString, user);
+        _reply("Could not find query type. Did you maybe mean to write: " + minDistanceQueryTypeStr + " : " + queryString, user);
         return;
       });
     } else {
