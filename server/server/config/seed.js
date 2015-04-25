@@ -53,7 +53,7 @@ Query.find({}).remove(function () {
   Query.create({
     query: 'W',
     url: 'http://en.wikipedia.org/wiki/%q',
-    selector: 'section:first',
+    selector: '#mw-content-text p:nth-of-type(1)',
     user: 'default'
   }, {
     query: 'Y',

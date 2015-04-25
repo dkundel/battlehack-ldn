@@ -24,7 +24,8 @@
     "socket.io": "~1.0.6",
     "socketio-jwt": "^2.0.2",
     "static-favicon": "~1.0.1",
-    "twilio": "^2.0.0"
+    "twilio": "^2.0.0",
+    "underscore.string": "^3.0.3"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

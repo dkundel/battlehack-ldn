@@ -37,9 +37,13 @@ exports.handle = function(req, res, next) {
 function _parse(text, user) {
   // parse the text content and find the necessary queries based on user
   // and call below text
-  var i = s.indexOf(':');
-  var queryType = s.slice(0,i);
-  var queryString = s.slice(i+1);
+  var i = text.indexOf(':');
+  if (i === -1) {
+    _reply('Try a proper query :)', user);
+    return;
+  }
+  var queryType = text.slice(0,i);
+  var queryString = text.slice(i+1);
   queryType = queryType.replace(/\s+/g, '');
   queryString = queryString.trim();
   queryString = slugify(queryString);
@@ -75,21 +79,22 @@ function _parse(text, user) {
           if(curDistance < minDistance) {
             minDistance = curDistance;
             minDistanceQueryTypeStr = result[i].query;
-          }          
+          }
         };
-        _reply("Could not find query type. Did you maybe mean to write:%0a%0a" + minDistanceQueryTypeStr + " : " + queryString);
+        _reply("Could not find query type. Did you maybe mean to write:%0a%0a" + minDistanceQueryTypeStr + " : " + queryString, user);
         return;
       });
     } else {
-      PhantomParser.parse(queryStr, result, function (replyText) {
+      PhantomParser.parse(queryString, result, function (replyText) {
         console.log(text); // @todo remove later
         _reply(replyText, user);
       });
     }
   });
-}  
+}
 
 function _reply(text, user) {
+  console.log(text);
   var client = twilio();
   client.sendMessage({
       to: user.number,
