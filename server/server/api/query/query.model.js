@@ -6,7 +6,8 @@ var mongoose = require('mongoose'),
 var QuerySchema = new Schema({
   query: String,
   url: String,
-  selector: String
+  selector: String,
+  user: String
 });
 
 module.exports = mongoose.model('Query', QuerySchema);

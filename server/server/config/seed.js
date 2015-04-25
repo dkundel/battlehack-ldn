@@ -7,6 +7,7 @@
 
 var Thing = require('../api/thing/thing.model');
 var User = require('../api/user/user.model');
+var Query = require('../api/query/query.model');
 
 Thing.find({}).remove(function() {
   Thing.create({
@@ -47,3 +48,17 @@ User.find({}).remove(function() {
     }
   );
 });
+
+Query.find({}).remove(function () {
+  Query.create({
+    query: 'W',
+    url: 'http://en.wikipedia.org/wiki/%q',
+    selector: 'section:first',
+    user: 'default'
+  }, {
+    query: 'Y',
+    url: 'http://yelp.com/%q',
+    selector: 'adress',
+    user: 'default'
+  });
+})

@@ -23,6 +23,13 @@ div(ng-include='"components/navbar/navbar.html"')
           p.help-block(ng-show='form.email.$error.mongoose')
             | {{ errors.email }}
 
+        .form-group(ng-class='{ "has-success": form.number.$valid && submitted,\
+        "has-error": form.number.$invalid && submitted }')
+          label Phone Number (with intl. prefix)
+          input.form-control(type='textf', name='number', ng-model='user.number', required='')
+          p.help-block(ng-show='form.number.$error.required && submitted')
+            | A number is required
+
         .form-group(ng-class='{ "has-success": form.password.$valid && submitted,\
         "has-error": form.password.$invalid && submitted }')
           label Password
@@ -40,5 +47,5 @@ div(ng-include='"components/navbar/navbar.html"')
             | Login
 
 
-        
+
   hr

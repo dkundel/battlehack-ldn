@@ -1,0 +1,29 @@
+div(ng-include='"components/navbar/navbar.html"')
+.container
+  h2 My Queries
+
+  .row
+    .col-lg-12
+      table.table.table-hover
+        thead
+          tr
+            th Query
+            th Url
+            th Selector
+        tbody
+          tr(ng-repeat='query in queries')
+            td {{query.query}}
+            td {{query.url}}
+            td {{query.selector}}
+
+      form.form-inline
+        .form-group
+          label.sr-only(for="queryInput") Query
+          input#queryInput.form-control(ng-model="querySymbol", type="text", placeholder="Query (e.g. W)")
+        .form-group
+          label.sr-only(for="urlInput") Url
+          input#queryInput.form-control(ng-model="url", type="text", placeholder="Url")
+        .form-group
+          label.sr-only(for="selectorInput") Selector
+          input#selectorInput.form-control(ng-model="selector", type="text", placeholder="Selector")
+        button#submitQuery.btn.btn-default(type="submit", ng-click="addQuery()") Create

@@ -11,6 +11,7 @@ angular.module('serverApp')
       if(form.$valid) {
         Auth.createUser({
           name: $scope.user.name,
+          number: $scope.user.number,
           email: $scope.user.email,
           password: $scope.user.password
         })
