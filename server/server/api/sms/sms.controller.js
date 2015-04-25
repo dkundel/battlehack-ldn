@@ -9,6 +9,8 @@ var Query = require('../query/query.model');
 var User = require('../user/user.model');
 var PhantomParser = require('./phantom.parser');
 var twilio = require('twilio');
+var slugify = require('underscore.string/slugify');
+var levenshtein = require('underscore.string/levenshtein');
 
 // Get list of things
 exports.handle = function(req, res, next) {
@@ -35,28 +37,57 @@ exports.handle = function(req, res, next) {
 function _parse(text, user) {
   // parse the text content and find the necessary queries based on user
   // and call below text
-  console.log("TEXT: " + text);
+  var i = s.indexOf(':');
+  var queryType = s.slice(0,i);
+  var queryString = s.slice(i+1);
+  queryType = queryType.replace(/\s+/g, '');
+  queryString = queryString.trim();
+  queryString = slugify(queryString);
 
-  var query = {
-    query: text,
-    url: "http://en.wikipedia.org/wiki/" + text.replace(' ', '_'),
-    selector: '#mw-content-text p:nth-of-type(1)',
-  };
-
-  // wikipedia_check(query);
-
-  var query2 = {
-    query: "Minion_(film)",
-    url: "http://en.wikipedia.org/wiki/Minions_(film)",
-    selector: '#mw-content-text p:nth-of-type(1)',
-    // TODO: Implement to ask something like 'Do you want to know more about next h2'
-  };
-
-  PhantomParser.parse(text, query, function (replyText) {
-    console.log(text);
-    _reply(replyText, user);
+  Query.findOne({
+    query : queryType
+  }, function(err, result) {
+    if(err) {
+      _reply("Internal error. Could unfortunatley not handle query. Please try again later.", user);
+      return;
+    }
+    if(!result) {
+      var minDistance = Number.MAX_VALUE;
+      var curDistance = Number.MAX_VALUE;
+      var minDistanceQueryTypeStr = "";
+      Query.find({
+        $or: [
+          {user: user._id},
+          {user: 'default'}
+        ]
+      }, function (err, result){
+        if(err) {
+          _reply("Internal error. Could unfortunatley not handle query. Please try again later.", user);
+          return;
+        }
+        if(!result) {
+          _reply("Internal error. There are unfortunatley no queries defined yet. Please try again later.", user);
+          return;
+        }
+        // iterate through queries and find smallest levensthein distance and ask user if they meant that
+        for (var i = result.length - 1; i >= 0; i--) {
+          curDistance = levenshtein(result[i].query, minDistanceQueryTypeStr);
+          if(curDistance < minDistance) {
+            minDistance = curDistance;
+            minDistanceQueryTypeStr = result[i].query;
+          }          
+        };
+        _reply("Could not find query type. Did you maybe mean to write:%0a%0a" + minDistanceQueryTypeStr + " : " + queryString);
+        return;
+      });
+    } else {
+      PhantomParser.parse(queryStr, result, function (replyText) {
+        console.log(text); // @todo remove later
+        _reply(replyText, user);
+      });
+    }
   });
-}
+}  
 
 function _reply(text, user) {
   var client = twilio();
