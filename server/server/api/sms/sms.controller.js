@@ -31,8 +31,16 @@ exports.handle = function(req, res, next) {
 function _parse(text, user) {
   // parse the text content and find the necessary queries based on user
   // and call below text
-  var query = {};
+
+  var query = {
+    query: "Minion_(film)",
+    url: "http://en.wikipedia.org/wiki/Minions_(film)",
+    selector: '#mw-content-text p:nth-of-type(1)',
+    // TODO: Implement to ask something like 'Do you want to know more about next h2'
+  };
+
   PhantomParser.parse(text, query, function (replyText) {
+    console.log(text);
     _reply(replyText, user);
   });
 }
