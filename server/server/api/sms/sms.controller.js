@@ -9,7 +9,7 @@ var Query = require('../query/query.model');
 var User = require('../user/user.model');
 var PhantomParser = require('./phantom.parser');
 var twilio = require('twilio');
-var slugify = require('underscore.string/escapeHTML');
+var escapeHTML = require('underscore.string/escapeHTML');
 var levenshtein = require('underscore.string/levenshtein');
 
 // Get list of things
@@ -82,7 +82,7 @@ function _parse(text, user, callback) {
             minDistanceQueryTypeStr = result[i].query;
           }
         };
-        callback("Could not find query type. Did you maybe mean to write: " + minDistanceQueryTypeStr + " : " + queryString, user);
+        callback("Could not find query type. Did you maybe mean to write:\n\n " + minDistanceQueryTypeStr + " : " + queryString, user);
         return;
       });
     } else {

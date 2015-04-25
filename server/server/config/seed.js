@@ -56,11 +56,12 @@ Query.find({}).remove(function () {
     query: 'w',
     url: 'http://en.wikipedia.org/w/index.php?search=%q',
     selector: '#mw-content-text p:nth-of-type(1)',
+    alternativeSelector: '.mw-search-result-heading>a', // selects href.
     user: 'default'
   }, {
     query: 'y',
-    url: 'http://yelp.com/%q',
-    selector: 'adress',
+    url: 'http://www.yelp.com/search?find_desc=%q',
+    selector: '.search-results-content li:nth-of-type(1)',
     user: 'default'
   });
 })
