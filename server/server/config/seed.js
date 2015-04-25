@@ -63,5 +63,10 @@ Query.find({}).remove(function () {
     url: 'http://www.yelp.com/search?find_desc=%q',
     selector: '.search-results-content li:nth-of-type(1)',
     user: 'default'
+  }, {
+    query: 'a',
+    url: 'http://www.amazon.co.uk/s/?field-keywords=%q',
+    selector: '',
+    user: ''
   });
 })

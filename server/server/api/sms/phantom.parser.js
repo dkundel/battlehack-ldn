@@ -7,21 +7,18 @@
 var clean = require('underscore.string/clean');
 var phantom = require('phantom');
 
-function wikipedia_check(query) {
-
-  console.log("here!!");
-}
-
 // Get list of things
 exports.parse = function(text, query, callback) {
 	query.full_url = query.url.replace('%q', text.replace(" ", "_"));
 	console.log("QUERY: " + JSON.stringify(query));
+	console.log("FULL URL: " + query.full_url);
 	phantom.create(function (ph) {
 	  ph.createPage(function (page) {
 	    page.open(query.full_url, function (status) {
 	      console.log(query.selector);
 	      page.evaluate(function (query) {
 	      	console.log("INSIDE" + query.selector);
+	      	
 		  	return $(query.selector).text()
 	      }, function (result) {
 	      	result = clean(result);
@@ -49,8 +46,14 @@ exports.parse = function(text, query, callback) {
 	        		}, query);
 	        	});
 	        } else {
-		        ph.exit();
-		        callback(result);
+	        	if (query.query="y" && result.indexOf("Try a larger search area." > -1)) {
+	        		result = "We did not understand your query. Please try again!";
+			        ph.exit();
+			        callback(result);
+	        	} else {
+			        ph.exit();
+			        callback(result);
+	    		}
 	        }
 	      }, query);
 	    });
