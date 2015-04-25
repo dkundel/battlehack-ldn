@@ -53,7 +53,7 @@ function _parse(text, user, callback) {
     query : queryType
   }, function(err, result) {
     if(err) {
-      callback("Internal error. Could unfortunatley not handle query. Please try again later.", user);
+      callback("Internal error. Could unfortunatley not handle query. Please try again later.", user, true);
       return;
     }
     if(!result) {
@@ -67,11 +67,11 @@ function _parse(text, user, callback) {
         ]
       }, function (err, result){
         if(err) {
-          callback("Internal error. Could unfortunatley not handle query. Please try again later.", user);
+          callback("Internal error. Could unfortunatley not handle query. Please try again later.", user, true);
           return;
         }
         if(!result) {
-          callback("Internal error. There are unfortunatley no queries defined yet. Please try again later.", user);
+          callback("Internal error. There are unfortunatley no queries defined yet. Please try again later.", user, true);
           return;
         }
         // iterate through queries and find smallest levensthein distance and ask user if they meant that
@@ -82,7 +82,7 @@ function _parse(text, user, callback) {
             minDistanceQueryTypeStr = result[i].query;
           }
         };
-        callback("Could not find query type. Did you maybe mean to write:\n\n " + minDistanceQueryTypeStr + " : " + queryString, user);
+        callback("Could not find query type. Did you maybe mean to write:\n\n " + minDistanceQueryTypeStr + " : " + queryString, user, true);
         return;
       });
     } else {

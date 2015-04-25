@@ -8,12 +8,12 @@ header#banner.hero-unit
       p.lead Query the web using simple SMS
 
 .container
-  .row
+  .row#signInDialog
     .col-lg-6.col-md-6.col-sm-6.col-xs-12(ng-hide="isLoggedIn()")
       a.btn.btn-lg.btn-default.btn-block(href="/signup") Sign Up
     .col-lg-6.col-md-6.col-sm-6.col-xs-12(ng-hide="isLoggedIn()")
-      a.btn.btn-lg.btn-primary.btn-block(href="/login") Log In
-  .row
+      a.btn.btn-lg.btn-custom.btn-block(href="/login") Log In
+  .row(ng-show="isLoggedIn()")
     h2 Your available Queries
     .col-lg-12
       table.table.table-hover
@@ -27,8 +27,8 @@ header#banner.hero-unit
             td {{query.query}}
             td {{query.url}}
             td {{query.selector}}
-    .col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.col-xs-12(ng-show="isLoggedIn()")
-      a.btn.btn-lg.btn-primary.btn-block(href="/queries") Edit Queries
+    .col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.col-xs-12
+      a.btn.btn-lg.btn-custom.btn-block(href="/queries") Edit Queries
 
 footer.footer
   .container

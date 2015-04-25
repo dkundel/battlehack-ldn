@@ -22,10 +22,21 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
     }
 }
 
-$mainColor: #4183D7;
+$mainColor: #4d7dbf;
 
 .navbar-brand {
   color: $mainColor;
+}
+
+#navBarLogo {
+  position: absolute;
+  height: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+}
+
+.btn-custom {
+  @include button-variant(#fff, $mainColor, $mainColor);
 }
 
 // Component styles are injected through grunt

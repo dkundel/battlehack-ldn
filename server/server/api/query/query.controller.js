@@ -67,12 +67,14 @@ exports.destroy = function(req, res) {
 exports.query = function (req, res) {
   var text = req.query.Body || '';
   var user = {_id: ''};
-  SmsController.parse(text, user, function (responseText, user) {
+  SmsController.parse(text, user, function (responseText, user, error) {
     var responseJson = {
       content: responseText
     };
-
-    res.json(200, responseJson);
+    if (error) {
+      return res.json(400, responseJson);
+    }
+    return res.json(200, responseJson);
   });
 }
 
