@@ -1,0 +1,44 @@
+{
+  "name": "pleaceholder",
+  "version": "0.1.0",
+  "description": "BattleHacks ",
+  "author": "Dominik, Denis, Naomi",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+    "adaro": "^0.1.9",
+    "dustjs-helpers": "^1.2.0",
+    "dustjs-linkedin": "^2.3.6",
+    "engine-munger": "^0.2.0",
+    "express": "^4.3.0",
+    "kraken-devtools": "^1.0.0",
+    "kraken-js": "^1.0.1",
+    "localizr": "^0.1.6",
+    "node-sass": "^0.8.6",
+    "phantom": "^0.7.2",
+    "twilio-api": "^0.3.3"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^2.1.4",
+    "grunt-config-dir": "^0.3.2",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-copy-to": "0.0.10",
+    "grunt-dustjs": "^1.2.1",
+    "grunt-localizr": "^0.1.4",
+    "grunt-mocha-cli": "^1.13.0",
+    "grunt-sass": "^0.12.1",
+    "mocha": "^1.18.0",
+    "supertest": "^0.9.0"
+  },
+  "generator-kraken": {
+    "version": "1.1.2",
+    "template": "dustjs",
+    "css": "sass",
+    "js": "browserify",
+    "task": "grunt"
+  }
+}
