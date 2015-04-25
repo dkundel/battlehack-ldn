@@ -54,7 +54,7 @@ User.find({}).remove(function() {
 Query.find({}).remove(function () {
   Query.create({
     query: 'w',
-    url: 'http://en.wikipedia.org/wiki/%q',
+    url: 'http://en.wikipedia.org/w/index.php?search=%q',
     selector: '#mw-content-text p:nth-of-type(1)',
     user: 'default'
   }, {
