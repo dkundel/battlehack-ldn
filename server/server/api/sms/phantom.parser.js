@@ -7,7 +7,7 @@
 var phantom = require('phantom');
 
 function wikipedia_check(query) {
-  
+
   console.log("here!!");
 }
 
@@ -16,12 +16,11 @@ exports.parse = function(text, query, callback) {
 	console.log("QUERY: " + JSON.stringify(query));
 	phantom.create(function (ph) {
 	  ph.createPage(function (page) {
-	  	console.log('bla');
 	    page.open(query.url, function (status) {
 	      console.log("hello ", status);
 	      console.log(query.selector);
-	      page.evaluate(function () { 				
-	      	return document.querySelector('#mw-content-text p:nth-of-type(1)').innerText; 
+	      page.evaluate(function (query) {
+	      	return document.querySelector(query.selector).innerText;
 	      	// jquery $('#mw-content-text p:nth-of-type(1)').text();
 	      }, function (result) {
 	        console.log('RESULT:\n ' + JSON.stringify(result));
@@ -39,18 +38,18 @@ exports.parse = function(text, query, callback) {
 	        			page.open(result, function(status) {
 	        				console.log("FIXED");
 	        				page.evaluate(function () {
-						      	return document.querySelector('#mw-content-text p:nth-of-type(1)').innerText; 
+						      	return document.querySelector('#mw-content-text p:nth-of-type(1)').innerText;
 	        				}, function (result) {
 	        					console.log('RESULT:\n ' + JSON.stringify(result));
 						        ph.exit();
-						        callback(result);	        	
+						        callback(result);
 	        				});
 	        			});
 	        		});
 	        	});
 	        } else {
 		        ph.exit();
-		        callback(result);	        	
+		        callback(result);
 	        }
 	      });
 	    });

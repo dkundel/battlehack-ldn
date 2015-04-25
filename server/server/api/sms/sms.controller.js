@@ -20,7 +20,11 @@ exports.handle = function(req, res, next) {
     number: fromNumber
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
-    if (!user) return res.json(401);
+    // if (!user) {
+      var user = {number: fromNumber};
+      // _reply('Please sign up to use our awesome service!', user);
+      // return res.json(200);
+    // }
 
     _parse(textBody, user);
 
@@ -55,19 +59,20 @@ function _parse(text, user) {
 }
 
 function _reply(text, user) {
-  var client = new twilio.RestClient('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN');
-  client.sendSms({
+  var client = twilio();
+  client.sendMessage({
       to: user.number,
-      from:'TWILIO_NUMBER',
+      from: process.env.TWILIO_NUMBER,
       body: text
   }, function(error, message) {
       if (!error) {
           console.log('Success! The SID for this SMS message is:');
-          console.log(message.sid);   
+          console.log(message.sid);
           console.log('Message sent on:');
           console.log(message.dateCreated);
       } else {
           console.log('Oops! There was an error.');
+          console.log(error);
       }
   });
 }
