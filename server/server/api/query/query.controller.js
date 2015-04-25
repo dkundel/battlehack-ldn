@@ -3,16 +3,16 @@
 var _ = require('lodash');
 var Query = require('./query.model');
 
-// Get list of querys
+// Get list of queries
 exports.index = function(req, res) {
   Query.find({
     $or: [
       {user: req.user._id},
       {user: 'default'}
     ]
-  }, function (err, querys) {
+  }, function (err, queries) {
     if(err) { return handleError(res, err); }
-    return res.json(200, querys);
+    return res.json(200, queries);
   });
 };
 
@@ -29,6 +29,7 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   var query = req.body.query;
   query.user = req.user._id;
+  query.query = query.query.toLowerCase();
 
   Query.create(query, function(err, query) {
     if(err) { return handleError(res, err); }

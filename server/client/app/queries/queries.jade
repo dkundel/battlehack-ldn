@@ -10,11 +10,14 @@ div(ng-include='"components/navbar/navbar.html"')
             th Query
             th Url
             th Selector
+            th &nbsp;
         tbody
           tr(ng-repeat='query in queries')
             td {{query.query}}
             td {{query.url}}
             td {{query.selector}}
+            td
+              button.close(type='button', ng-click='deleteQuery(query)', ng-hide='query.user === "default"') ×
 
       form.form-inline
         .form-group
