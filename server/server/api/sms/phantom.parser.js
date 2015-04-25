@@ -4,6 +4,7 @@
 
 'use strict';
 
+var clean = require('underscore.string/clean');
 var phantom = require('phantom');
 
 function wikipedia_check(query) {
@@ -23,7 +24,7 @@ exports.parse = function(text, query, callback) {
 	      	console.log("INSIDE" + query.selector);
 		  	return $(query.selector).text()
 	      }, function (result) {
-	      	result = result.replace(/(\n| )*/gm," ");
+	      	result = clean(result);
 	        console.log('RESULT1:\n ' + result);
 	        // FIND FIRST WIKIPEDIA RESULT
 	        if ( query.query="w" && result.indexOf("does not exist") > -1) {
