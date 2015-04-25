@@ -13,10 +13,12 @@ function wikipedia_check(query) {
 
 // Get list of things
 exports.parse = function(text, query, callback) {
+	query.full_url = query.url.replace('%q', text.replace(" ", "_"));
+	console.log("MUAH: " + query.full_url);
 	console.log("QUERY: " + JSON.stringify(query));
 	phantom.create(function (ph) {
 	  ph.createPage(function (page) {
-	    page.open(query.url, function (status) {
+	    page.open(query.full_url, function (status) {
 	      console.log(query.selector);
 	      page.evaluate(function (query) {
 	      	console.log("INSIDE" + query.selector);
@@ -26,18 +28,16 @@ exports.parse = function(text, query, callback) {
 	        // FIND FIRST WIKIPEDIA RESULT
 	        if (result.indexOf("does not exist") > -1) {
 	        	console.log("query wrong");
-	        	var search_url = query.selector + text.replace(' ', '+');
- 	        	page.open(search_url, function(status) {
-	        		console.log("NO");
-	        		page.evaluate(function () {
+ 	        	page.open(query.full_url, function(status) {
+	        		console.log("NO" + query.full_url);
+	        		page.evaluate(function (query) {
 	        			return document.querySelector('.mw-search-result-heading>a').href;
 	        		}, function (result) {
-	        			console.log("SEARCH URL: " + search_url);
 	        			console.log("RESULT2: " + JSON.stringify(result));
 	        			page.open(result, function(status) {
 	        				console.log("FIXED");
-	        				page.evaluate(function () {
-						      	return document.querySelector('#mw-content-text p:nth-of-type(1)').innerText;
+	        				page.evaluate(function (query) {
+						      	return document.querySelector(query.selector).innerText;
 	        				}, function (next_result) {
 	        					console.log('RESULT:\n ' + JSON.stringify(next_result));
 						        ph.exit();
