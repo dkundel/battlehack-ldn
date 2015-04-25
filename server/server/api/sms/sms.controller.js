@@ -28,12 +28,20 @@ exports.handle = function(req, res, next) {
   });
 };
 
-
 function _parse(text, user) {
   // parse the text content and find the necessary queries based on user
   // and call below text
+  console.log("TEXT: " + text);
 
   var query = {
+    query: text,
+    url: "http://en.wikipedia.org/wiki/" + text.replace(' ', '_'),
+    selector: '#mw-content-text p:nth-of-type(1)',
+  };
+
+  // wikipedia_check(query);
+
+  var query2 = {
     query: "Minion_(film)",
     url: "http://en.wikipedia.org/wiki/Minions_(film)",
     selector: '#mw-content-text p:nth-of-type(1)',
