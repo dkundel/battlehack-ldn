@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Query = require('./query.model');
+var SmsController = require('../sms/sms.controller');
 
 // Get list of queries
 exports.index = function(req, res) {
@@ -62,6 +63,18 @@ exports.destroy = function(req, res) {
     });
   });
 };
+
+exports.query = function (req, res) {
+  var text = req.query.Body || '';
+  var user = {_id: ''};
+  SmsController.parse(text, user, function (responseText, user) {
+    var responseJson = {
+      content: responseText
+    };
+
+    res.json(200, responseJson);
+  });
+}
 
 function handleError(res, err) {
   return res.send(500, err);

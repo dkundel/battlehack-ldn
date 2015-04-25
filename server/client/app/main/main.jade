@@ -2,30 +2,36 @@ div(ng-include='"components/navbar/navbar.html"')
 
 header#banner.hero-unit
   .container
-    h1 'Allo, 'Allo!
-    p.lead Kick-start your next web app with Angular Fullstack
-    img(src='assets/images/yeoman.png', alt='I\'m Yeoman')
+    .row
+      img.logoHero.col-lg-4.col-lg-offset-4.col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.col-xs-6.col-xs-offset-3(src='assets/images/logo-text-white.png', alt='I\'m Yeoman')
+    .row
+      p.lead Query the web using simple SMS
 
 .container
   .row
+    .col-lg-6.col-md-6.col-sm-6.col-xs-12(ng-hide="isLoggedIn()")
+      a.btn.btn-lg.btn-default.btn-block(href="/signup") Sign Up
+    .col-lg-6.col-md-6.col-sm-6.col-xs-12(ng-hide="isLoggedIn()")
+      a.btn.btn-lg.btn-primary.btn-block(href="/login") Log In
+  .row
+    h2 Your available Queries
     .col-lg-12
-      h1.page-header Features:
-      ul.nav.nav-tabs.nav-stacked.col-lg-6(ng-repeat='thing in awesomeThings')
-        li
-          a(href='#', tooltip='{{thing.info}}')
-            | {{thing.name}}
-            button.close(type='button', ng-click='deleteThing(thing)') ×
-
-  form.thing-form
-    label Syncs in realtime across clients
-    p.input-group
-      input.form-control(type='text', placeholder='Add a new thing here.', ng-model='newThing')
-      span.input-group-btn
-        button.btn.btn-primary(type='submit', ng-click='addThing()') Add New
+      table.table.table-hover
+        thead
+          tr
+            th Query
+            th Url
+            th Selector
+        tbody
+          tr(ng-repeat='query in queries')
+            td {{query.query}}
+            td {{query.url}}
+            td {{query.selector}}
+    .col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.col-xs-12(ng-show="isLoggedIn()")
+      a.btn.btn-lg.btn-primary.btn-block(href="/queries") Edit Queries
 
 footer.footer
   .container
     p
-      a(href='https://twitter.com/tyhenkel') @tyhenkel
-      = ' | '
-      a(href='https://github.com/DaftMonk/generator-angular-fullstack/issues?state=open') Issues
+    | TextTheWeb created at: &nbsp;
+    a(href="https://2015.battlehack.org/london") BattleHack London 2015

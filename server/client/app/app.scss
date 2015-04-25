@@ -22,6 +22,12 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
     }
 }
 
+$mainColor: #4183D7;
+
+.navbar-brand {
+  color: $mainColor;
+}
+
 // Component styles are injected through grunt
 // injector
 @import 'account/login/login.scss';

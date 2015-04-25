@@ -28,18 +28,18 @@ exports.handle = function(req, res, next) {
       // return res.json(200);
     // }
 
-    _parse(textBody, user);
+    _parse(textBody, user, _reply);
 
     res.json(200);
   });
 };
 
-function _parse(text, user) {
+function _parse(text, user, callback) {
   // parse the text content and find the necessary queries based on user
   // and call below text
   var i = text.indexOf(':');
   if (i === -1) {
-    _reply('Try a proper query :)', user);
+    callback('Try a proper query :)', user);
     return;
   }
   var queryType = text.slice(0,i);
@@ -52,7 +52,7 @@ function _parse(text, user) {
     query : queryType
   }, function(err, result) {
     if(err) {
-      _reply("Internal error. Could unfortunatley not handle query. Please try again later.", user);
+      callback("Internal error. Could unfortunatley not handle query. Please try again later.", user);
       return;
     }
     if(!result) {
@@ -66,11 +66,11 @@ function _parse(text, user) {
         ]
       }, function (err, result){
         if(err) {
-          _reply("Internal error. Could unfortunatley not handle query. Please try again later.", user);
+          callback("Internal error. Could unfortunatley not handle query. Please try again later.", user);
           return;
         }
         if(!result) {
-          _reply("Internal error. There are unfortunatley no queries defined yet. Please try again later.", user);
+          callback("Internal error. There are unfortunatley no queries defined yet. Please try again later.", user);
           return;
         }
         // iterate through queries and find smallest levensthein distance and ask user if they meant that
@@ -81,17 +81,19 @@ function _parse(text, user) {
             minDistanceQueryTypeStr = result[i].query;
           }
         };
-        _reply("Could not find query type. Did you maybe mean to write:%0a%0a" + minDistanceQueryTypeStr + " : " + queryString, user);
+        callback("Could not find query type. Did you maybe mean to write:%0a%0a" + minDistanceQueryTypeStr + " : " + queryString, user);
         return;
       });
     } else {
       PhantomParser.parse(queryString, result, function (replyText) {
         console.log(text); // @todo remove later
-        _reply(replyText, user);
+        callback(replyText, user);
       });
     }
   });
 }
+
+exports.parse = _parse;
 
 function _reply(text, user) {
   console.log(text);
