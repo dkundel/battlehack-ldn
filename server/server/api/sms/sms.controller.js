@@ -22,11 +22,11 @@ exports.handle = function(req, res, next) {
     number: fromNumber
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
-    // if (!user) {
+    if (!user) {
       var user = {number: fromNumber};
-      // _reply('Please sign up to use our awesome service!', user);
-      // return res.json(200);
-    // }
+      _reply('Please sign up to use our awesome service!', user);
+      return res.json(200);
+    }
 
     _parse(textBody, user);
 
