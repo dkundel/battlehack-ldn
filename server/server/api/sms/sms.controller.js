@@ -22,7 +22,7 @@ exports.handle = function(req, res, next) {
   var fromNumber = req.body.From || '';
   var textBody = req.body.Body || '';
 
-  if (textBody.toLowerCase() === 'start') {
+  if (textBody.trim().toLowerCase() === 'start') {
     _reply('Welcome to TextTheWeb. To test our service simply text something like:\nw:BattleHack\nFor more awesome queries sign up.', {number: fromNumber});
     return res.json(200);
   }
@@ -48,11 +48,15 @@ exports.handle = function(req, res, next) {
     if (textBody.indexOf('Pay:') === 0) {
       _payment(textBody, user, _reply);
       return res.json(200);
+    } else if (text.indexOf('Bot:') === 0) {
+      var content = text.substr('Bot:'.length).trim();
+      PhantomParser.bot(content, function (responseText) {
+        return _reply(responseText, user);
+      });
+    } else {
+      _parse(textBody, user, _reply);
+      return res.json(200);
     }
-
-    _parse(textBody, user, _reply);
-
-    return res.json(200);
   });
 };
 

@@ -5,6 +5,7 @@ var Query = require('./query.model');
 var SmsController = require('../sms/sms.controller');
 var PayeeController = require('../payee/payee.controller');
 var Payee = require('../payee/payee.model');
+var PhantomParser = require('../sms/phantom.parser');
 var User = require('../user/user.model');
 
 // Get list of queries
@@ -119,6 +120,11 @@ exports.query = function (req, res) {
           return res.json(200, responseJson);
         });
       }
+    });
+  } else if (text.indexOf('Bot:') === 0) {
+    var content = text.substr('Bot:'.length).trim();
+    PhantomParser.bot(content, function (responseText) {
+      return res.json(200, responseText);
     });
   } else {
     SmsController.parse(text, user, function (responseText, user, error) {
