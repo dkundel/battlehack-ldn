@@ -22,7 +22,7 @@ exports.handle = function(req, res, next) {
   var fromNumber = req.body.From || '';
   var textBody = req.body.Body || '';
 
-  if (textBody.toLowerCase() === 'start') {
+  if (textBody.trim().toLowerCase() === 'start') {
     _reply('Welcome to TextTheWeb. To test our service simply text something like:\nw:BattleHack\nFor more awesome queries sign up.', {number: fromNumber});
     return res.json(200);
   }
