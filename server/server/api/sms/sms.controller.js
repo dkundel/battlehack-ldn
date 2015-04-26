@@ -13,6 +13,7 @@ var twilio = require('twilio');
 var escapeHTML = require('underscore.string/escapeHTML');
 var levenshtein = require('underscore.string/levenshtein');
 var request = require('request');
+var clean = require('underscore.string/clean');
 
 // Get list of things
 exports.handle = function(req, res, next) {
@@ -77,6 +78,7 @@ function _parse(text, user, callback) {
   queryType = escapeHTML(queryType);
   queryType = queryType.toLowerCase();
   queryString = queryString.trim();
+  queryString = clean(queryString);
 
   Query.findOne({
     query : queryType
@@ -115,17 +117,39 @@ function _parse(text, user, callback) {
         return;
       });
     } else {
-      PhantomParser.parse(queryString, result, function (replyText) {
-        console.log(text); // @todo remove later
-        var maxSmsLength = 1600;
-        replyText = replyText.substring(0, Math.min(maxSmsLength,replyText.length));
-        callback(replyText, user);
-      });
+      if(queryType === 't') {
+        if(queryString === '') {
+          callback("Plase send a translation request in the following format. Example:\n\n t : en de This a nice event.");
+        } else {
+          queryArr = queryString.split(' ', 3);
+          var to = '';
+          var from = '';
+          var text = '';
+          var helpText = '';
+          if(queryArr.length != 3) {
+            to = 'en';
+            helpText = 'Unfortunatley we could not understand your query completly. Nevertheless we tried:\n';
+            text = queryArr[0] + " " + queryArr[1];
+          } else {
+            from = queryArr[0];
+            to = queryArr[1];
+            text = queryString.slice(from.length + to.length + 2);
+          }
+          _translate(text, user, from, to, helpText, callback);
+        }
+      } else {
+        PhantomParser.parse(queryString, result, function (replyText) {
+          console.log(text); // @todo remove later
+          var maxSmsLength = 1600;
+          replyText = replyText.substring(0, Math.min(maxSmsLength,replyText.length));
+          callback(replyText, user);
+        });
+      }
     }
   });
 }
 
-function translate(text, user, from, to, callback) {
+function _translate(text, user, from, to, helpText, callback) {
   request.post(
     'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13',
     { form: { client_id:  process.env.MICROSOFT_TRANSLATE_CLIENT_ID,
@@ -158,7 +182,7 @@ function translate(text, user, from, to, callback) {
               return;
             }
             answer = answer.slice(0, i);
-            callback(answer, user);
+            callback(helpText + answer, user);
           } else {
             callback("Unfortunatley we were unable to translate your text.", user);
           }
