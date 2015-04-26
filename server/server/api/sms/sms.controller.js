@@ -9,6 +9,7 @@ var Query = require('../query/query.model');
 var User = require('../user/user.model');
 var PhantomParser = require('./phantom.parser');
 var PayeeController = require('../payee/payee.controller');
+var Payee = require('../payee/payee.model');
 var twilio = require('twilio');
 var escapeHTML = require('underscore.string/escapeHTML');
 var levenshtein = require('underscore.string/levenshtein');
@@ -58,14 +59,34 @@ function _payment(text, user, callback) {
   text = text.substr('Pay:'.length);
   var seperatorIndex = text.indexOf(':');
   if (seperatorIndex === -1) {
-    return callback('Wrong formated paying message. Please write "Pay:PAYEESHORT:VALUE"', user);
-  }
-  var payee = text.substr(0, seperatorIndex).trim();
-  var amount = text.substr(seperatorIndex + 1).trim();
+    if (text.trim().toLowerCase() === 'payees') {
+      Payee.find({
+        user: user._id
+      }, function (err, payees) {
+        if (err) return callback('Something went wrong finding the payees', user);
+        if (!payees || payees.length === 0) return callback('No payees registered', user);
 
-  PayeeController.pay(payee, user, amount, function (responseText, error) {
-    callback(responseText, user);
-  });
+        var message = 'Your available Payees are:';
+        for (var i = 0; i < payees.length; i++) {
+          message += payees[i].shortName + ', ';
+        }
+
+        message = message.substr(0, message.length -2);
+
+        return callback(message, user);
+      });
+    } else {
+      return callback('Wrong formated paying message. Please write "Pay:PAYEESHORT:VALUE"', user);
+    }
+
+  } else {
+    var payee = text.substr(0, seperatorIndex).trim();
+    var amount = text.substr(seperatorIndex + 1).trim();
+
+    PayeeController.pay(payee, user, amount, function (responseText, error) {
+      callback(responseText, user);
+    });
+  }
 }
 
 function _parse(text, user, callback) {
@@ -171,7 +192,7 @@ function translate(text, user, from, to, callback) {
       } else {
         callback("Unfortunatley we could not contact the translation service. Please try again later.", user);
       }
-    });  
+    });
 }
 
 
