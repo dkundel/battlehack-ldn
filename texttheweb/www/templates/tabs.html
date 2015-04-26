@@ -5,14 +5,19 @@ navigation history that also transitions its views in and out.
 -->
 <ion-tabs class="tabs-icon-bottom tabs-color-active-positive">
 
-  <!-- Dashboard Tab -->
-  <ion-tab title="Internet" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/tab/internet">
+  <!-- Internet Tab -->
+  <ion-tab title="Internet" icon-off="ion-earth" icon-on="ion-earth" href="#/tab/internet">
     <ion-nav-view name="tab-internet"></ion-nav-view>
   </ion-tab>
 
-  <!-- Chats Tab -->
-  <ion-tab title="SMS" icon-off="ion-ios-chatboxes-outline" icon-on="ion-ios-chatboxes" href="#/tab/sms">
-    <ion-nav-view name="tab-sms"></ion-nav-view>
+  <!-- Pay Tab -->
+  <ion-tab title="Pay" icon-off="ion-social-usd" icon-on="ion-social-usd" href="#/tab/pay">
+    <ion-nav-view name="tab-pay"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Config Tab -->
+  <ion-tab title="Settings" icon-off="ion-gear-a" icon-on="ion-gear-a" href="#/tab/config">
+    <ion-nav-view name="tab-config"></ion-nav-view>
   </ion-tab>
 
 </ion-tabs>

@@ -6,7 +6,7 @@
 
 var clean = require('underscore.string/clean');
 var phantom = require('phantom');
-
+var ElizaBot = require('./elizabot').ElizaBot;
 
 // page.open('http://www.phantomjs.org', function(status) {
 //   if (status === "success") {
@@ -22,6 +22,42 @@ var phantom = require('phantom');
 //     });
 //   }
 // });
+
+// var eliza = new ElizaBot();
+//          var initial = eliza.getInitial();
+//          var reply = eliza.transform(inputstring);
+
+//          if (eliza.quit) {
+//              // last user input was a quit phrase
+//          }
+
+//          // method `transform()' returns a final phrase in case of a quit phrase
+//          // but you can also get a final phrase with:
+//          var final = eliza.getFinal();
+
+//          // other methods: reset memory and internal state
+//          eliza.reset();
+
+//          // to set the internal memory size override property `memSize':
+//          eliza.memSize = 100; // (default: 20)
+
+//          // to reproduce the example conversation given by J. Weizenbaum
+//          // initialize with the optional random-choice-disable flag
+//          var originalEliza = new ElizaBot(true);
+
+exports.bot = function (text, callback) {
+	var eliza = new ElizaBot();
+	var initial = eliza.getInitial();
+	var reply = eliza.transform(text);
+	if (eliza.quit) {
+
+	}
+	var final = eliza.getFinal();
+
+	eliza.reset();
+	eliza.memSize = 100;
+	callback(reply);
+}
 
 // Get list of things
 exports.parse = function(text, query, callback) {

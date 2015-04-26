@@ -1,0 +1,22 @@
+<ion-view view-title="Pay">
+  <ion-content class="padding"
+    scroll=false
+	  scrollbar-y=false>
+    <div class="item item-input item-select pay-select">
+     <div class="input-label">
+       Destination
+     </div>
+     <select ng-model="payCtrl.payee" ng-options="p for p in payCtrl.config.PAYEES">
+     </select>
+    </div>
+    <label class="item item-input pay-amount">
+      <input placeholder="" type="number" ng-model="payCtrl.amount">
+    </label>
+
+    <button class="button button-full button-positive" on-tap="payCtrl.pay()">
+      SEND
+    </button>
+    Response:</br>
+    {{payCtrl.queryText}}
+  </ion-content>
+</ion-view>
