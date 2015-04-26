@@ -19,13 +19,21 @@ exports.handle = function(req, res, next) {
   var fromNumber = req.body.From || '';
   var textBody = req.body.Body || '';
 
+  if (textBody.toLowerCase() === 'start') {
+    _reply('Welcome to TextTheWeb. To test our service simply text something like:\nw:BattleHack\nFor more awesome queries sign up.', {number: fromNumber});
+    return res.json(200);
+  }
+
   User.findOne({
     number: fromNumber
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
     if (!user) {
       var user = {number: fromNumber};
-      _reply('Please sign up to use our awesome service!', user);
+      _parse(textBody, user, function (text, user) {
+        text += '\n\nFor custom queries and payment please sign up.';
+        _reply(text, user);
+      });
       return res.json(200);
     }
 
@@ -36,7 +44,7 @@ exports.handle = function(req, res, next) {
 
     _parse(textBody, user, _reply);
 
-    res.json(200);
+    return res.json(200);
   });
 };
 
@@ -120,6 +128,7 @@ exports.parse = _parse;
 
 function _reply(text, user) {
   console.log(text);
+  text = text.substr(0, 320); // truncate to 2 text
   var client = twilio();
   client.sendMessage({
       to: user.number,
