@@ -7619,7 +7619,7 @@ a.button {
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
 
-.request-text {
+.request-text, .pay-select {
   margin-bottom: 10px; }
 
 .provider-list {
