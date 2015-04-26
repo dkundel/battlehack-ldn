@@ -4,6 +4,7 @@ var _ = require('lodash');
 var Query = require('./query.model');
 var SmsController = require('../sms/sms.controller');
 var PayeeController = require('../payee/payee.controller');
+var Payee = require('../payee/payee.model');
 var User = require('../user/user.model');
 
 // Get list of queries
@@ -69,13 +70,13 @@ exports.destroy = function(req, res) {
 exports.query = function (req, res) {
   var text = req.query.Body || '';
   var user = {_id: ''};
-  if (!req.query.From) {
-    return res.json(400, {content: 'Bad Request'});
+  var from = null;
+
+  if (req.query.From) {
+    from = '+' + req.query.From;
   }
 
-  var from = '+' + req.query.From;
-
-  if (text.indexOf('Pay:') === 0 && from) {
+  if (text.indexOf('Pay:') === 0 && from !== null) {
     User.findOne({
       number: from
     }, '-salt -hashedPassword', function (err, user) {
@@ -85,11 +86,29 @@ exports.query = function (req, res) {
       text = text.substr('Pay:'.length);
       var sepeartorIndex = text.indexOf(':');
       if (sepeartorIndex === -1) {
-        return res.json(400, {content: 'Wrong pay request'});
+        if (text.trim().toLowerCase() === 'payees') {
+          Payee.find({
+            user: user._id
+          }, function (err, payees) {
+            if (err) return res.json(500, {content: 'Something went wrong finding the payees'});
+            if (!payees || payees.length === 0) return res.json(404, {content: 'No payees registered'});
+
+            var message = '';
+            for (var i = 0; i < payees.length; i++) {
+              message += payees[i].shortName + ',';
+            }
+
+            message = message.substr(0, message.length -1);
+
+            res.json(200, {content: message});
+          });
+        } else {
+          return res.json(400, {content: 'Wrong pay request'});
+        }
       }
 
-      var payee = text.substr(0, sepeartorIndex);
-      var amount = text.substr(sepeartorIndex + 1);
+      var payee = text.substr(0, sepeartorIndex).trim();
+      var amount = text.substr(sepeartorIndex + 1).trim();
 
       PayeeController.pay(payee, user, amount, function (responseText, error) {
         var responseJson = {

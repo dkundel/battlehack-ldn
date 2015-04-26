@@ -65,7 +65,7 @@ exports.create = function(req, res) {
 
 exports.pay = function (name, user, amount, callback) {
   var payeeId = user._id + '_' + name;
-
+  console.log(payeeId);
   Payee.findOne({
     name: payeeId
   }, function (err, payee) {
