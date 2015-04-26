@@ -1,0 +1,21 @@
+<ion-view view-title="Settings">
+  <ion-content class="padding"
+    scroll=false
+	  scrollbar-y=false>
+    <label class="item item-input request-text">
+      <input placeholder="Your phone number" type="tel" ng-model="configCtrl.tel">
+    </label>
+    <li class="item item-toggle">
+       Use SMS instead of Mobile Data
+       <label class="toggle toggle-balanced">
+         <input type="checkbox" ng-model="configCtrl.useSMS">
+         <div class="track">
+           <div class="handle"></div>
+         </div>
+       </label>
+    </li>
+    <button class="button button-full button-positive" on-tap="configCtrl.save()">
+      SAVE
+    </button>
+  </ion-content>
+</ion-view>

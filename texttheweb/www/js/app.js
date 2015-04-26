@@ -49,13 +49,21 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
       }
     }
   })
-
-  .state('tab.sms', {
-    url: '/sms',
+  .state('tab.pay', {
+    url: '/pay',
     views: {
-      'tab-sms': {
-        templateUrl: 'templates/tab-sms.html',
-        controller: 'SmsCtrl as smsCtrl'
+      'tab-pay': {
+        templateUrl: 'templates/tab-pay.html',
+        controller: 'PayCtrl as payCtrl'
+      }
+    }
+  })
+  .state('tab.config', {
+    url: '/config',
+    views: {
+      'tab-config': {
+        templateUrl: 'templates/tab-config.html',
+        controller: 'ConfigCtrl as configCtrl'
       }
     }
   });
