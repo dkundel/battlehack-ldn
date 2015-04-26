@@ -113,7 +113,7 @@ function _parse(text, user, callback) {
       callback("Internal error. Could unfortunatley not handle query. Please try again later.", user, true);
       return;
     }
-    if(!result) {
+    if(!result && queryType !== 't') {
       var minDistance = Number.MAX_VALUE;
       var curDistance = Number.MAX_VALUE;
       var minDistanceQueryTypeStr = "";
@@ -147,7 +147,7 @@ function _parse(text, user, callback) {
         if(queryString === '') {
           callback("Plase send a translation request in the following format. Example:\n\n t : en de This a nice event.");
         } else {
-          queryArr = queryString.split(' ', 3);
+          var queryArr = queryString.split(' ', 3);
           var to = '';
           var from = '';
           var text = '';
