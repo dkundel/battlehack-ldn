@@ -81,7 +81,7 @@ exports.pay = function (name, user, amount, callback) {
       merchantAccountId: payee.name,
       amount: amount,
       paymentMethodNonce: payee.nonce,
-      serviceFeeAmount: '0.00'
+      serviceFeeAmount: '0.02'
     }, function (err, result) {
       if (err) {
         return callback('Failed to transfer money', true);

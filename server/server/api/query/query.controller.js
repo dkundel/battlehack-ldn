@@ -100,25 +100,25 @@ exports.query = function (req, res) {
 
             message = message.substr(0, message.length -1);
 
-            res.json(200, {content: message});
+            return res.json(200, {content: message});
           });
         } else {
           return res.json(400, {content: 'Wrong pay request'});
         }
+      } else {
+        var payee = text.substr(0, sepeartorIndex).trim();
+        var amount = text.substr(sepeartorIndex + 1).trim();
+
+        PayeeController.pay(payee, user, amount, function (responseText, error) {
+          var responseJson = {
+            content: responseText
+          }
+          if (err) {
+            return res.json(400, responseJson);
+          }
+          return res.json(200, responseJson);
+        });
       }
-
-      var payee = text.substr(0, sepeartorIndex).trim();
-      var amount = text.substr(sepeartorIndex + 1).trim();
-
-      PayeeController.pay(payee, user, amount, function (responseText, error) {
-        var responseJson = {
-          content: responseText
-        }
-        if (err) {
-          return res.json(400, responseJson);
-        }
-        return res.json(200, responseJson);
-      });
     });
   } else {
     SmsController.parse(text, user, function (responseText, user, error) {
