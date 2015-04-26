@@ -1,0 +1,21 @@
+<ion-view view-title="SMS">
+  <ion-content class="padding"
+    scroll=false
+	  scrollbar-y=false>
+    <label class="item item-input request-text">
+      <input placeholder="What do you want to know about?" type="text" ng-model="smsCtrl.userText">
+    </label>
+    <div class="item item-input item-select">
+     <div class="input-label">
+       Service
+     </div>
+     <select ng-model="smsCtrl.provider" ng-options="p as p.name for p in smsCtrl.api.providers">
+     </select>
+    </div>
+    <button class="button button-full button-positive" on-tap="smsCtrl.sendSMS()">
+      SEND
+    </button>
+    Response:</br>
+    {{internetCtrl.queryText}}
+  </ion-content>
+</ion-view>
