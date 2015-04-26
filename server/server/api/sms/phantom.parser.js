@@ -41,36 +41,51 @@ exports.parse = function(text, query, callback) {
                                 result = clean(result);
                                 console.log('RESULT1:\n ' + result);
                                 // FIND FIRST WIKIPEDIA RESULT
-                                if (query.query === "w" && result.indexOf("does not exist") > -1) {
-                                    console.log("query wrong");
-                                    page.open(query.full_url, function(status) {
-                                        console.log("NO " + query.full_url);
-                                        page.evaluate(function(query) {
-                                            return document.querySelector(query.alternativeSelector).href;
-                                        }, function(result) {
-                                            console.log("RESULT2: " + JSON.stringify(result));
-                                            page.open(result, function(status) {
-                                                console.log("FIXED");
-                                                page.evaluate(function(query) {
-                                                    // str.replace(/blue/g, "red");
-                                                    return $(query.selector).text();
-                                                }, function(next_result) {
-                                                    console.log('RESULT:\n ' + JSON.stringify(next_result));
-                                                    ph.exit();
+                                switch (query.query) {
+                            	    case "w": 
+                            	    	if (result.indexOf("does not exist") > -1) {
+		                                    console.log("query wrong");
+        		                            page.open(query.full_url, function(status) {
+                		                        console.log("NO " + query.full_url);
+                        		                page.evaluate(function(query) {
+                                	            return document.querySelector(query.alternativeSelector).href;
+                                    	    }, function(result) {
+                                        	    console.log("RESULT2: " + JSON.stringify(result));
+                                            	page.open(result, function(status) {
+                                                	console.log("FIXED");
+                                                	page.evaluate(function(query) {
+                                                    	return $(query.selector).text();
+                                                	}, function(next_result) {
+                                                    	console.log('RESULT:\n ' + JSON.stringify(next_result));
+                                                    	ph.exit();
                                                     callback(next_result);
                                                 }, query);
                                             });
-                                        }, query);
-                                    });
-                                } else {
-                                    if (query.query === "y" && result.indexOf("Try a larger search area." > -1)) {
-                                        result = "We did not understand your query. Please try again!";
-                                        ph.exit();
-                                        callback(result);
-                                    } else {
-                                        ph.exit();
-                                        callback(result);
-                                    }
+                                        	}, query);
+                                    		});
+                                		}
+                                		break; 
+                                	case "y":
+	                                    if (result.indexOf("Try a larger search area.") > -1) {
+    	                                    result = "We did not understand your query. Please try again!";
+        	                                ph.exit();
+            	                            callback(result);
+                	                    }
+                	                    break;
+                	                case "d":
+                	                	if (result === "") {
+                	                		result = "We did not understand your query. Please try again!";
+	                	                    ph.exit();
+                    	                	callback(result);                    	                	
+    	        	                	}
+                	                	break;
+                	                default:
+                	                	if (result === "" || result.indexOf("There were no results matching the query" > -1)) {
+                	                		result = "We did not understand your query. Please try again!";
+	                	                    ph.exit();
+                    	                	callback(result);                    	                	
+    	        	                	}
+    	        	                	break;
                                 }
                             }, query);
                     });
