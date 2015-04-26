@@ -12,6 +12,7 @@ var PayeeController = require('../payee/payee.controller');
 var twilio = require('twilio');
 var escapeHTML = require('underscore.string/escapeHTML');
 var levenshtein = require('underscore.string/levenshtein');
+var request = require('request');
 
 // Get list of things
 exports.handle = function(req, res, next) {
@@ -128,6 +129,53 @@ function _parse(text, user, callback) {
     }
   });
 }
+
+function translate(text, user, from, to, callback) {
+  request.post(
+    'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13',
+    { form: { client_id:  process.env.MICROSOFT_TRANSLATE_CLIENT_ID,
+              client_secret: process.env.MICROSOFT_TRANSLATE_CLIENT_SECRET,
+              scope: "http://api.microsofttranslator.com",
+              grant_type: "client_credentials"} },
+    function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var jsonBody = JSON.parse(body);
+        var access_token = jsonBody.access_token;
+        var options = {
+          url: encodeURI('http://api.microsofttranslator.com/v2/Http.svc/Translate?text=' + escapeHTML(text) + "&to=" + to + "&from=" + from),
+          headers: {
+            'Authorization': 'Bearer ' + access_token
+          }
+        };
+        request(options, function get_callback(error, response, body) {
+          if (!error && response.statusCode == 200) {
+            var i = body.indexOf('>');
+            if (i === -1) {
+              console.log('Parsing error of translation request.');
+              callback('Unfortunatley we were unable to translate your text.', user);
+              return;
+            }
+            var answer = body.slice(i+1);
+            i = answer.lastIndexOf('<');
+            if (i === -1) {
+              console.log('Parsing error of translation request.');
+              callback('Unfortunatley we were unable to translate your text.', user);
+              return;
+            }
+            answer = answer.slice(0, i);
+            callback(answer, user);
+          } else {
+            callback("Unfortunatley we were unable to translate your text.", user);
+          }
+        });
+      } else {
+        callback("Unfortunatley we could not contact the translation service. Please try again later.", user);
+      }
+    });  
+}
+
+
+
 
 exports.parse = _parse;
 
