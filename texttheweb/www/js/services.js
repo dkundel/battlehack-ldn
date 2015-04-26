@@ -1,6 +1,6 @@
 var ConfigService = function($http) {
   this.SERVER_BASE_URL = "http://honeybadger.ngrok.com/";
-  this.PHONE_NUM = '+447903576934';
+  this.PHONE_NUM = '+447903571441';
   this.MY_PHONE = '447858909938';
   this.USE_SMS = false;
   this.PAYEES = [];
