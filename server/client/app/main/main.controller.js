@@ -9,13 +9,17 @@ angular.module('serverApp')
     $scope.queries = [];
     $scope.payees = [];
 
-    if (Auth.isLoggedIn()) {
-      $http.get('/api/queries').success(function(queries) {
-        $scope.queries = queries;
-      });
+    $scope.$watch(function() {
+      return Auth.isLoggedIn();
+    }, function (authenticated) {
+      if (authenticated) {
+        $http.get('/api/queries').success(function(queries) {
+          $scope.queries = queries;
+        });
 
-      $http.get('/api/payees').success(function(payees) {
-        $scope.payees = payees;
-      });
-    }
+        $http.get('/api/payees').success(function(payees) {
+          $scope.payees = payees;
+        });
+      }
+    });
   });
