@@ -18,6 +18,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/payee/payee.socket').register(socket);
   require('../api/query/query.socket').register(socket);
   require('../api/thing/thing.socket').register(socket);
 }
@@ -39,9 +40,11 @@ module.exports = function (socketio) {
   // }));
 
   socketio.on('connection', function (socket) {
-    socket.address = socket.handshake.address.address + ':' +
+    if (socket.handshake.address) {
+      socket.address = socket.handshake.address.address + ':' +
                      socket.handshake.address.port;
-    socket.connectedAt = new Date();
+      socket.connectedAt = new Date();
+    }
 
     // Call onDisconnect.
     socket.on('disconnect', function () {

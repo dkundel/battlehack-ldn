@@ -8,6 +8,7 @@ var _ = require('lodash');
 var Query = require('../query/query.model');
 var User = require('../user/user.model');
 var PhantomParser = require('./phantom.parser');
+var PayeeController = require('../payee/payee.controller');
 var twilio = require('twilio');
 var escapeHTML = require('underscore.string/escapeHTML');
 var levenshtein = require('underscore.string/levenshtein');
@@ -19,21 +20,48 @@ exports.handle = function(req, res, next) {
   var fromNumber = req.body.From || '';
   var textBody = req.body.Body || '';
 
+  if (textBody.toLowerCase() === 'start') {
+    _reply('Welcome to TextTheWeb. To test our service simply text something like:\nw:BattleHack\nFor more awesome queries sign up.', {number: fromNumber});
+    return res.json(200);
+  }
+
   User.findOne({
     number: fromNumber
   }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
     if (!user) {
       var user = {number: fromNumber};
-      _reply('Please sign up to use our awesome service!', user);
+      _parse(textBody, user, function (text, user) {
+        text += '\n\nFor custom queries and payment please sign up.';
+        _reply(text, user);
+      });
+      return res.json(200);
+    }
+
+    if (textBody.indexOf('Pay:') === 0) {
+      _payment(textBody, user, _reply);
       return res.json(200);
     }
 
     _parse(textBody, user, _reply);
 
-    res.json(200);
+    return res.json(200);
   });
 };
+
+function _payment(text, user, callback) {
+  text = text.substr('Pay:'.length);
+  var seperatorIndex = text.indexOf(':');
+  if (seperatorIndex === -1) {
+    return callback('Wrong formated paying message. Please write "Pay:PAYEESHORT:VALUE"', user);
+  }
+  var payee = text.substr(0, seperatorIndex).trim();
+  var amount = text.substr(seperatorIndex + 1).trim();
+
+  PayeeController.pay(payee, user, amount, function (responseText, error) {
+    callback(responseText, user);
+  });
+}
 
 function _parse(text, user, callback) {
   // parse the text content and find the necessary queries based on user
@@ -148,6 +176,7 @@ exports.parse = _parse;
 
 function _reply(text, user) {
   console.log(text);
+  text = text.substr(0, 320); // truncate to 2 text
   var client = twilio();
   client.sendMessage({
       to: user.number,

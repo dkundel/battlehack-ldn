@@ -6,6 +6,11 @@ header#banner.hero-unit
       img.logoHero.col-lg-4.col-lg-offset-4.col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.col-xs-6.col-xs-offset-3(src='assets/images/logo-text-white.png', alt='I\'m Yeoman')
     .row
       p.lead Query the web using simple SMS
+    .row
+      p.lead Simply start by texting
+      p.lead.well Start
+      p.lead to
+      p.lead.well +441586202025
 
 .container
   .row#signInDialog
@@ -29,6 +34,20 @@ header#banner.hero-unit
             td {{query.selector}}
     .col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.col-xs-12
       a.btn.btn-lg.btn-custom.btn-block(href="/queries") Edit Queries
+  .row(ng-show="isLoggedIn() && payees.length !== 0")
+    h2 Available Payees
+    .col-lg-12
+      table.table.table-hover
+        thead
+          tr
+            th Identifier
+            th Name
+        tbody
+          tr(ng-repeat='payee in payees')
+            td {{payee.shortName}}
+            td {{payee.merchant.individual.firstName}} {{payee.merchant.individual.lastName}}
+    .col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3.col-sm-6.col-sm-offset-3.col-xs-12
+      a.btn.btn-lg.btn-custom.btn-block(href="/payee") Edit Payees
 
 footer.footer
   .container

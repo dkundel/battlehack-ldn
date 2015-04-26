@@ -7,10 +7,15 @@ angular.module('serverApp')
     $scope.isLoggedIn = Auth.isLoggedIn;
 
     $scope.queries = [];
+    $scope.payees = [];
 
     if (Auth.isLoggedIn()) {
       $http.get('/api/queries').success(function(queries) {
         $scope.queries = queries;
+      });
+
+      $http.get('/api/payees').success(function(payees) {
+        $scope.payees = payees;
       });
     }
   });

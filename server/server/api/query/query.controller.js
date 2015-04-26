@@ -3,6 +3,8 @@
 var _ = require('lodash');
 var Query = require('./query.model');
 var SmsController = require('../sms/sms.controller');
+var PayeeController = require('../payee/payee.controller');
+var User = require('../user/user.model');
 
 // Get list of queries
 exports.index = function(req, res) {
@@ -67,15 +69,49 @@ exports.destroy = function(req, res) {
 exports.query = function (req, res) {
   var text = req.query.Body || '';
   var user = {_id: ''};
-  SmsController.parse(text, user, function (responseText, user, error) {
-    var responseJson = {
-      content: responseText
-    };
-    if (error) {
-      return res.json(400, responseJson);
-    }
-    return res.json(200, responseJson);
-  });
+  if (!req.query.From) {
+    return res.json(400, {content: 'Bad Request'});
+  }
+
+  var from = '+' + req.query.From;
+
+  if (text.indexOf('Pay:') === 0 && from) {
+    User.findOne({
+      number: from
+    }, '-salt -hashedPassword', function (err, user) {
+      if (err) return res.json(302, {content: 'Not authenticated'});
+      if (!user) return res.json(404, {content: 'No user found'});
+
+      text = text.substr('Pay:'.length);
+      var sepeartorIndex = text.indexOf(':');
+      if (sepeartorIndex === -1) {
+        return res.json(400, {content: 'Wrong pay request'});
+      }
+
+      var payee = text.substr(0, sepeartorIndex);
+      var amount = text.substr(sepeartorIndex + 1);
+
+      PayeeController.pay(payee, user, amount, function (responseText, error) {
+        var responseJson = {
+          content: responseText
+        }
+        if (err) {
+          return res.json(400, responseJson);
+        }
+        return res.json(200, responseJson);
+      });
+    });
+  } else {
+    SmsController.parse(text, user, function (responseText, user, error) {
+      var responseJson = {
+        content: responseText
+      };
+      if (error) {
+        return res.json(400, responseJson);
+      }
+      return res.json(200, responseJson);
+    });
+  }
 }
 
 function handleError(res, err) {

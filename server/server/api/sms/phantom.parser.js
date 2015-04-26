@@ -42,7 +42,7 @@ exports.parse = function(text, query, callback) {
                                 console.log('RESULT1:\n ' + result);
                                 // FIND FIRST WIKIPEDIA RESULT
                                 switch (query.query) {
-                            	    case "w": 
+                            	    case "w":
                             	    	if (result.indexOf("does not exist") > -1) {
 		                                    console.log("query wrong");
         		                            page.open(query.full_url, function(status) {
@@ -64,7 +64,7 @@ exports.parse = function(text, query, callback) {
                                         	}, query);
                                     		});
                                 		}
-                                		break; 
+                                		break;
                                 	case "y":
 	                                    if (result.indexOf("Try a larger search area.") > -1) {
     	                                    result = "We did not understand your query. Please try again!";
@@ -76,24 +76,26 @@ exports.parse = function(text, query, callback) {
                 	                	if (result === "") {
                 	                		result = "We did not understand your query. Please try again!";
 	                	                    ph.exit();
-                    	                	callback(result);                    	                	
+                    	                	callback(result);
     	        	                	}
                 	                	break;
                 	                case "s":
                 	                	if (result === "") {
                 	                		result = "We did not understand your query. Please try again!";
 	                	                    ph.exit();
-                    	                	callback(result);  
+                    	                	callback(result);
                 	                	}
                 	                	break;
                 	                default:
                 	                	if (result === "" || result.indexOf("There were no results matching the query" > -1)) {
                 	                		result = "We did not understand your query. Please try again!";
 	                	                    ph.exit();
-                    	                	callback(result);                    	                	
-    	        	                	}
-    	        	                	break;
+                    	                	callback(result);
+  	        	                	     }
+    	        	                	   break;
                                 }
+                                ph.exit();
+                                callback(result);
                             }, query);
                     });
                 }
