@@ -40,6 +40,12 @@ User.find({}).remove(function() {
     password: 'test'
   }, {
     provider: 'local',
+    name: 'Other Test user',
+    number: process.env.DANI_PHONE,
+    email: 'foo@bar.com',
+    password: 'foo'
+  }, {
+    provider: 'local',
     role: 'admin',
     name: 'Admin',
     number: process.env.NAOMI_PHONE,

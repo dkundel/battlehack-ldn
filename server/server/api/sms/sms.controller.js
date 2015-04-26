@@ -8,6 +8,7 @@ var _ = require('lodash');
 var Query = require('../query/query.model');
 var User = require('../user/user.model');
 var PhantomParser = require('./phantom.parser');
+var PayeeController = require('../payee/payee.controller');
 var twilio = require('twilio');
 var escapeHTML = require('underscore.string/escapeHTML');
 var levenshtein = require('underscore.string/levenshtein');
@@ -28,11 +29,30 @@ exports.handle = function(req, res, next) {
       return res.json(200);
     }
 
+    if (textBody.indexOf('Pay:') === 0) {
+      _payment(textBody, user, _reply);
+      return res.json(200);
+    }
+
     _parse(textBody, user, _reply);
 
     res.json(200);
   });
 };
+
+function _payment(text, user, callback) {
+  text = text.substr('Pay:'.length);
+  var seperatorIndex = text.indexOf(':');
+  if (seperatorIndex === -1) {
+    return callback('Wrong formated paying message. Please write "Pay:PAYEESHORT:VALUE"', user);
+  }
+  var payee = text.substr(0, seperatorIndex).trim();
+  var amount = text.substr(seperatorIndex + 1).trim();
+
+  PayeeController.pay(payee, user, amount, function (responseText, error) {
+    callback(responseText, user);
+  });
+}
 
 function _parse(text, user, callback) {
   // parse the text content and find the necessary queries based on user

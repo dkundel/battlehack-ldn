@@ -4,6 +4,7 @@
   "main": "server/app.js",
   "dependencies": {
     "body-parser": "~1.0.0",
+    "braintree": "^1.23.0",
     "composable-middleware": "^0.3.0",
     "compression": "~1.0.1",
     "connect-mongo": "^0.4.1",
@@ -20,6 +21,7 @@
     "morgan": "~1.0.0",
     "passport": "~0.2.0",
     "passport-local": "~0.1.6",
+    "paypal-rest-sdk": "^1.5.2",
     "phantom": "^0.7.2",
     "socket.io": "~1.0.6",
     "socketio-jwt": "^2.0.2",

@@ -1,0 +1,60 @@
+div(ng-include='"components/navbar/navbar.html"')
+.container
+  h2 My Payees
+  .row
+    .col-lg-12
+      table.table.table-hover
+        thead
+          tr
+            th Identifier
+            th Name
+            th
+        tbody
+          tr(ng-repeat='payee in payees')
+            td {{payee.shortName}}
+            td {{payee.merchant.individual.firstName}} {{payee.merchant.individual.lastName}}
+            td
+              button.close(type='button', ng-click='deletePayee(payee)') ×
+  .row
+    .col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2.col-xs-12
+      button.btn.btn-custom.btn-block(ng-click="newPayeeOpen = newPayeeOpen ? false : true")
+        span(ng-hide="newPayeeOpen") Create new Payee
+        span(ng-show="newPayeeOpen") Hide new Payee
+  .row.well(style="margin-top: 20px;", ng-show="newPayeeOpen")
+    form#addPayee
+      .form-group
+        label(for="payeeId") Payee Identifier (for SMS)
+        input#payeeId.form-control(type="text", ng-model="payeeId")
+      .form-group
+        label(for="firstName") First Name
+        input#firstName.form-control(type="text", ng-model="merchInfo.individual.firstName")
+      .form-group
+        label(for="lastName") Last Name
+        input#lastName.form-control(type="text", ng-model="merchInfo.individual.lastName")
+      .form-group
+        label(for="email") Email
+        input#email.form-control(type="text", ng-model="merchInfo.individual.email")
+      .form-group
+        label(for="dateOfBirth") Date of Birth
+        input#dateOfBirth.form-control(type="text", ng-model="merchInfo.individual.dateOfBirth")
+      .form-group
+        label(for="streetAddress") Street Address
+        input#streetAddress.form-control(type="text", ng-model="merchInfo.individual.address.streetAddress")
+      .form-group
+        label(for="locality") Locality
+        input#locality.form-control(type="text", ng-model="merchInfo.individual.address.locality")
+      .form-group
+        label(for="region") Region
+        input#region.form-control(type="text", ng-model="merchInfo.individual.address.region")
+      .form-group
+        label(for="postalCode") Postal Code
+        input#postalCode.form-control(type="text", ng-model="merchInfo.individual.address.postalCode")
+      .form-group
+        label(for="accountNumber") Account Number
+        input#accountNumber.form-control(type="text", ng-model="merchInfo.funding.accountNumber")
+      .form-group
+        label(for="routingNumber") Routing Number
+        input#routingNumber.form-control(type="text", ng-model="merchInfo.funding.routingNumber")
+      #dropin
+      input.btn.btn-custom(type="submit", value="Add Payee")
+
