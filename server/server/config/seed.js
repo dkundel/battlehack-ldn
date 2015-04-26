@@ -32,23 +32,25 @@ Thing.find({}).remove(function() {
 });
 
 User.find({}).remove(function() {
-  User.create({
-    provider: 'local',
-    name: 'Test User',
-    number: process.env.NAOMI_PHONE,
-    email: 'test@test.com',
-    password: 'test'
-  }, {
-    provider: 'local',
-    name: 'Other Test user',
-    number: process.env.DANI_PHONE,
-    email: 'foo@bar.com',
-    password: 'foo'
-  }, {
+  User.create(
+  // {
+  //   provider: 'local',
+  //   name: 'Test User',
+  //   number: process.env.NAOMI_PHONE,
+  //   email: 'test@test.com',
+  //   password: 'test'
+  // }, {
+  //   provider: 'local',
+  //   name: 'Other Test user',
+  //   number: process.env.DANI_PHONE,
+  //   email: 'foo@bar.com',
+  //   password: 'foo'
+  // },
+  {
     provider: 'local',
     role: 'admin',
     name: 'Admin',
-    number: process.env.NAOMI_PHONE,
+    // number: process.env.NAOMI_PHONE,
     email: 'admin@admin.com',
     password: 'admin'
   }, function() {

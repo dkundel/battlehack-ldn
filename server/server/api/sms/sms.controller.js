@@ -33,8 +33,13 @@ exports.handle = function(req, res, next) {
     if (!user) {
       var user = {number: fromNumber};
       _parse(textBody, user, function (text, user) {
-        text += '\n\nFor custom queries and payment please sign up.';
-        _reply(text, user);
+        var pleaseSignUp = '\n\nFor custom queries and payment please sign up.';
+        if (text.length + 3 + pleaseSignUp.length > 320) {
+          text = text.substr(0, 320 - (pleaseSignUp.length + 3));
+          text += '...' + pleaseSignUp;
+        }
+
+        _reply(text, user, true);
       });
       return res.json(200);
     }
@@ -198,9 +203,11 @@ function _translate(text, user, from, to, helpText, callback) {
 
 exports.parse = _parse;
 
-function _reply(text, user) {
+function _reply(text, user, truncated) {
   console.log(text);
-  text = text.substr(0, 320); // truncate to 2 text
+  if (!truncated && text.length > 320) {
+    text = text.substr(0, 317) + '...';
+  }
   var client = twilio();
   client.sendMessage({
       to: user.number,
