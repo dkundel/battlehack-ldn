@@ -108,6 +108,8 @@ function _parse(text, user, callback) {
     } else {
       PhantomParser.parse(queryString, result, function (replyText) {
         console.log(text); // @todo remove later
+        var maxSmsLength = 1600;
+        replyText = replyText.substring(0, Math.min(maxSmsLength,replyText.length));
         callback(replyText, user);
       });
     }

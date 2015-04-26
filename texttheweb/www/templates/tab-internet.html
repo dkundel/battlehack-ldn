@@ -1,0 +1,21 @@
+<ion-view view-title="Internet">
+  <ion-content class="padding"
+    scroll=false
+	  scrollbar-y=false>
+    <label class="item item-input request-text">
+      <input placeholder="What do you want to know about?" type="text" ng-model="internetCtrl.userText">
+    </label>
+    <div class="item item-input item-select">
+     <div class="input-label">
+       Service
+     </div>
+     <select ng-model="internetCtrl.provider" ng-options="p as p.name for p in internetCtrl.api.providers">
+     </select>
+    </div>
+    <button class="button button-full button-positive" on-tap="internetCtrl.doRequest()">
+      SEND
+    </button>
+    Response:</br>
+    {{internetCtrl.queryText}}
+  </ion-content>
+</ion-view>
