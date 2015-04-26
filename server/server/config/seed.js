@@ -70,12 +70,18 @@ Query.find({}).remove(function () {
     url: 'http://www.amazon.co.uk/s/?field-keywords=%q',
     selector: '.search-results-content li:nth-of-type(1)',
     spaceCharacter: '_',
-    user: ''
+    user: 'default'
   }, {
     query: 'd',
     url: 'http://www.oxforddictionaries.com/definition/english/%q',
     selector: 'section.se1.senseGroup',
     spaceCharacter: '-',
-    user: ''
+    user: 'default'
+  }, {
+    query: 's',
+    url: 'http://www.wordreference.com/es/translation.asp?tranword=%q',
+    selector: 'td.ToWrd',
+    spaceCharacter: '+',
+    user: 'default'
   });
 })

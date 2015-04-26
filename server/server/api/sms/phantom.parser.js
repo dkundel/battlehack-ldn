@@ -79,6 +79,13 @@ exports.parse = function(text, query, callback) {
                     	                	callback(result);                    	                	
     	        	                	}
                 	                	break;
+                	                case "s":
+                	                	if (result === "") {
+                	                		result = "We did not understand your query. Please try again!";
+	                	                    ph.exit();
+                    	                	callback(result);  
+                	                	}
+                	                	break;
                 	                default:
                 	                	if (result === "" || result.indexOf("There were no results matching the query" > -1)) {
                 	                		result = "We did not understand your query. Please try again!";
